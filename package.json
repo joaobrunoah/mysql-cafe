@@ -1,9 +1,9 @@
 {
-  "author": "João Bruno Abou Hatem de Liz",
-  "name": "ccfmlib",
-  "description": "CCFM Project Library (iMusica Corp)",
-  "version": "1.2.25.1",
-  "repository": "https://bitbucket.org/imusicaradios/ccfmlib",
+  "author": "João Bruno Abou Hatem de Liz <joaobrunoah@gmail.com>",
+  "name": "mysql-cafe",
+  "description": "A framework to use Mysql with Node.js. [UNDER DEVELOPMENT, USE AT YOUR OWN RISK]",
+  "version": "0.0.1",
+  "repository": "https://github.com/joaobrunoah/mysql-cafe",
   "main": "mysqlCafe.js",
   "dependencies": {
     "extend": "^3.0.0",
