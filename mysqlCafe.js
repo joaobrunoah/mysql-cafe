@@ -3,20 +3,25 @@
  */
 var MysqlCredentials = require("./mysql/mysql-credentials");
 var MysqlQueries = require("./mysql/mysql-queries");
+var MysqlUtils = require("./mysql/mysql-utils");
 var Console = require("./lib/console");
 
 var MysqlCafe = function(DEBUG_MODE) {
-    if(DEBUG_MODE) {
-        Console.DEBUGMODE = true;
-    }
+
+    Console.DEBUGMODE = true;
+    // if(DEBUG_MODE) {
+    //     Console.DEBUGMODE = true;
+    // }
 };
 
 MysqlCafe.addCredentials = function(poolName, credentials) {
-
     MysqlCredentials.addCredential(poolName,credentials);
-
 };
 
 MysqlCafe.query = MysqlQueries;
+
+MysqlCafe.savedCredentials = MysqlCredentials.savedCredentials;
+
+MysqlCafe.utils = MysqlUtils;
 
 module.exports = MysqlCafe;

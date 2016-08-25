@@ -44,7 +44,7 @@ MysqlQueries.select_query = function (what, where, join, options, table, poolNam
         return cb("Table name must be specified");
     }
 
-    selectDB(db, function(err, mysqlPool) {
+    selectDB(poolName, function(err, mysqlPool) {
 
         if (err || mysqlPool == undefined) {
             return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
@@ -129,16 +129,16 @@ MysqlQueries.select_object_query = function (select_object, poolName, cb) {
  *
  * @param object {Object|Array} Values to be inserted into table
  * @param table {String} table name
- * @param db {String} type of database. To possible values, please refer to "Constants" library
+ * @param poolName {String} type of database. To possible values, please refer to "Constants" library
  * @param cb {Function} callback function. Structure = function(err,inserted_id)
  */
-MysqlQueries.insert_query = function (object, table, db, cb) {
+MysqlQueries.insert_query = function (object, table, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.insert_query(object, table, db, cb);
+        MysqlQueries.insert_query(object, table, poolName, cb);
     }
 
-    if (!db || db == "") {
+    if (!poolName || poolName == "") {
         return cb("PoolName must be specified.");
     } else if (!table || table == "") {
         return cb("Table name must be specified");
@@ -146,7 +146,7 @@ MysqlQueries.insert_query = function (object, table, db, cb) {
         return cb("Object to be inserted is null, undefined or empty");
     }
 
-    selectDB(db, function(err, mysqlPool) {
+    selectDB(poolName, function(err, mysqlPool) {
 
         if (err || mysqlPool == undefined) {
             return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
