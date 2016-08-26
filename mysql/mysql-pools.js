@@ -5,8 +5,9 @@
 var mysql = require('mysql');
 var mysqlCredentials = require('./mysql-credentials.js');
 
-var mysqlPoolsArray = {};
+var console = require('../lib/console')('MYSQL_POOL');
 
+var mysqlPoolsArray = {};
 
 var MysqlPools = {};
 MysqlPools.getMysqlPool = function (poolName, cb) {
