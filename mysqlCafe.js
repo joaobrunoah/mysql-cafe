@@ -14,6 +14,8 @@ var MysqlCafe = function(DEBUG_MODE) {
     return MysqlCafe;
 };
 
+Console.DEBUGMODE = true;
+
 // Mysql Local Libraries
 var MysqlCredentials = require("./mysql/mysql-credentials");
 var MysqlQueries = require("./mysql/mysql-queries");

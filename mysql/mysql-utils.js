@@ -497,6 +497,10 @@ function formatParam(param){
         if(param instanceof Buffer) {
             param = param.toString();
         }
+        
+        if(param === 'null' || param === null) {
+            return null;
+        }
 
         ans = "\'" + param.replace(/'/g, '\'\'') + "\'";
         return ans;
