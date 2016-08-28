@@ -382,19 +382,24 @@ MysqlUtils.buildRowToInsert = function(object) {
 
     var row = "";
 
-    for (var j = 0; j < columns.length; j++) {
+    //Inverted to remove undefined values from insert query
+    for (var j = columns.length - 1; j >= 0 ; j--) {
         var column = columns[j];
 
         var value = formatParam(object[column]);
 
-        if (row == "") {
-            row = "(" + value;
+        if(value === undefined || value === "'undefined'" || value === "undefined" || value === null) {
+            columns.splice(j,1);
         } else {
-            row = row + "," + value;
+            if (row == "") {
+                row = value + ")";
+            } else {
+                row = value + "," + row;
+            }
         }
     }
 
-    row = row + ")";
+    row = "(" + row;
 
     return {
         rowString : row,
@@ -498,7 +503,7 @@ function formatParam(param){
             param = param.toString();
         }
         
-        if(param === 'null' || param === null) {
+        if(param === 'null') {
             return null;
         }
 
