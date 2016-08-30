@@ -221,7 +221,7 @@ MysqlQueries.insert_query = function (object, table, poolName, cb) {
                     insertMultiple("insert", table, valuesArray[j], columns, mysqlPool, 5, 1, function (err, values) {
                         if (err) {
                             queriesCountErr++;
-                            console.error("[" + constants.MYSQL_QUERIES + "] Could not insert values in table " + table + ": " + values);
+                            console.error("[MYSQL_QUERIES] Could not insert values in table " + table + ": " + values);
                             console.error(err);
                             if (queriesCountErr + queriesCountSuc >= valuesArray.length) {
                                 return cb(null);
