@@ -21,11 +21,18 @@ var MysqlCredentials = require("./mysql/mysql-credentials");
 var MysqlQueries = require("./mysql/mysql-queries");
 var MysqlUtils = require("./mysql/mysql-utils");
 
+// Functions
+var MysqlInArray = require("./mysql/mysql-inArray");
+
 MysqlCafe.addCredentials = function(poolName, credentials) {
     MysqlCredentials.addCredential(poolName,credentials);
 };
 
 MysqlCafe.query = MysqlQueries;
+
+MysqlCafe.functions = {
+    inArray: MysqlInArray
+};
 
 MysqlCafe.savedCredentials = MysqlCredentials.savedCredentials;
 
