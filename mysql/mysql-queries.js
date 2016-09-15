@@ -35,7 +35,7 @@ var MysqlQueries = function () {
 MysqlQueries.select_query = function (what, where, join, options, table, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.select_query(what, where, join, options, table, poolName, cb);
+        return MysqlQueries.select_query(what, where, join, options, table, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
@@ -86,7 +86,7 @@ MysqlQueries.select_query = function (what, where, join, options, table, poolNam
 MysqlQueries.select_object_query = function (select_object, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.select_object_query(select_object, poolName, cb);
+        return MysqlQueries.select_object_query(select_object, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
@@ -135,7 +135,7 @@ MysqlQueries.select_object_query = function (select_object, poolName, cb) {
 MysqlQueries.insert_query = function (object, table, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.insert_query(object, table, poolName, cb);
+        return MysqlQueries.insert_query(object, table, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
@@ -340,7 +340,7 @@ MysqlQueries.replace_query = function (object, table, poolName, cb) {
 MysqlQueries.update_query = function (set, where, table, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.update_query(set, where, table, poolName, cb);
+        return MysqlQueries.update_query(set, where, table, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
@@ -500,7 +500,7 @@ MysqlQueries.update_insert_query = function (set, where, table, poolName, cb) {
 MysqlQueries.delete_query = function (where, table, poolName, cb) {
 
     function deadCb() {
-        MysqlQueries.delete_query(where, table, poolName, cb);
+        return MysqlQueries.delete_query(where, table, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
