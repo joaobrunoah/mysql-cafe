@@ -103,10 +103,6 @@ MysqlQueries.select_object_query = function (select_object, poolName, cb) {
             return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
         }
 
-        if (!select_object.from) {
-            return cb("Select Object does not contain 'from' parameter.");
-        }
-
         // Builds the Query String
         var query = mysqlUtils.buildSelectString(select_object);
 
