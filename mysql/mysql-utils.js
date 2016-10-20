@@ -23,12 +23,12 @@ MysqlUtils.OPERATOR = {
 };
 
 MysqlUtils.buildSelectString = function (object) {
-    if(!object.from) {
-        throw new Error("Parameter 'from' not found in object select!")
+    if(!object.table) {
+        throw new Error("Parameter 'table' not found in object select!")
     }
 
-    if(object.from && object.from.isSelect && !object.from.alias) {
-        throw new Error("Parameter 'from' is a new Select, and every inner select must have parameter 'alias'!");
+    if(object.table && object.table.isSelect && !object.table.alias) {
+        throw new Error("Parameter 'table' is a new Select, and every inner select must have parameter 'alias'!");
     }
 
     var whatString = "*";
@@ -54,26 +54,19 @@ MysqlUtils.buildSelectString = function (object) {
 
     }
 
-    if(object.from && !object.from.isSelect) {
-        var joinString = MysqlUtils.buildJoinString(object.from.join);
+    if(object.table && !object.table.isSelect) {
+        var joinString = MysqlUtils.buildJoinString(object.join);
 
-        var tableString = object.from.table;
-        var tableName = object.from.table;
-
-        if(object.from.table.isSelect) {
-            tableString = MysqlUtils.buildSelectString(object.from.table);
-        }
+        var tableString = object.table;
+        var tableName = object.table;
 
         if (whatString == "*") {
-            if(object.from.table.isSelect) {
-                tableName = object.from.table.alias;
-            }
-            whatString = MysqlUtils.buildWhatJoinString(tableName, object.from.join);
+            whatString = MysqlUtils.buildWhatJoinString(tableName, object.join);
         }
 
         fromString = tableString + joinString;
     } else {
-        fromString = MysqlUtils.buildSelectString(object.from);
+        fromString = MysqlUtils.buildSelectString(object.table);
     }
 
     var unionString = "";
