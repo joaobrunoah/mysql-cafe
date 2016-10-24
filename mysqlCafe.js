@@ -26,6 +26,7 @@ var MysqlInArray = require("./mysql/mysql-inArray");
 var MysqlInterval = require("./mysql/mysql-interval");
 var MysqlLike = require("./mysql/mysql-like-where");
 var MysqlNotNull = require("./mysql/mysql-not-null");
+var MysqlNull = require("./mysql/mysql-null");
 
 MysqlCafe.addCredentials = function(poolName, credentials) {
     MysqlCredentials.addCredential(poolName,credentials);
@@ -37,7 +38,8 @@ MysqlCafe.functions = {
     inArray: MysqlInArray,
     interval: MysqlInterval,
     like: MysqlLike,
-    notNull: MysqlNotNull
+    notNull: MysqlNotNull,
+    Null: MysqlNull
 };
 
 MysqlCafe.savedCredentials = MysqlCredentials.savedCredentials;
