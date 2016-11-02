@@ -23,6 +23,7 @@ var MysqlUtils = require("./mysql/mysql-utils");
 
 // Functions
 var MysqlInArray = require("./mysql/mysql-inArray");
+var MysqlNotInArray = require("./mysql/mysql-notInArray");
 var MysqlInterval = require("./mysql/mysql-interval");
 var MysqlLike = require("./mysql/mysql-like-where");
 var MysqlNotNull = require("./mysql/mysql-not-null");
@@ -36,6 +37,7 @@ MysqlCafe.query = MysqlQueries;
 
 MysqlCafe.functions = {
     inArray: MysqlInArray,
+    notInArray: MysqlNotInArray,
     interval: MysqlInterval,
     like: MysqlLike,
     notNull: MysqlNotNull,
