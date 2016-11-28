@@ -2,12 +2,13 @@
  * Created by joao.bruno on 05/02/2015.
  */
 
-function MysqlLike(string){
+function MysqlLike(string, not){
     this.string = string;
+    this.not = not;
 }
 
 MysqlLike.prototype.mountWhere = function(variable){
-    return variable + " like '%" + this.string + "%'";
+    return variable + (this.not ? ' not ' : '') + " like '%" + this.string + "%'";
 };
 
 module.exports = MysqlLike;
