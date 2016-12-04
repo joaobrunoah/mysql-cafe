@@ -371,6 +371,73 @@ MysqlQueries.update_query = function (set, where, table, poolName, cb) {
     });
 };
 
+MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateFields, table, poolName, cb) {
+
+    function deadCb() {
+        return MysqlQueries.insert_duplicate_query(fields, values, onDuplicateFields, table, poolName, cb);
+    }
+
+    if (!poolName || poolName == "") {
+        return cb("PoolName must be specified.");
+    } else if (!table || table == "") {
+        return cb("Table name must be specified");
+    } else if(!(values instanceof Array)) {
+        return cb("values is not an array!")
+    }
+
+    selectDB(poolName, function(err, mysqlPool) {
+
+        if (err || mysqlPool == undefined) {
+            return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
+        }
+
+        var valuesString = "";
+
+        for(var i = 0; i < values.length; i++) {
+            var actualValue = "(";
+            for (var j = 0; j < fields.length; j++) {
+                actualValue = actualValue + (values[i][fields[j]] ? "'" + values[i][fields[j]] + "'" : 'null');
+                if(fields.length - j > 1) {
+                    actualValue = actualValue + ",";
+                }
+            }
+            actualValue = actualValue + ")";
+            valuesString = valuesString + (valuesString == "" ? "" : ",") + actualValue;
+        }
+
+        var fieldValue = "(";
+        for (var i = 0; i < fields.length; i++) {
+            fieldValue = fieldValue + fields[i];
+            if(fields.length - i > 1) {
+                fieldValue = fieldValue + ",";
+            }
+        }
+        fieldValue = fieldValue + ")";
+
+        var onDuplicateFieldsValue = "";
+        for (var i = 0; i < onDuplicateFields.length; i++) {
+            onDuplicateFieldsValue = onDuplicateFieldsValue + onDuplicateFields[i] + "=VALUES(" + onDuplicateFields[i] + ")";
+            if(onDuplicateFields.length - i > 1) {
+                onDuplicateFieldsValue = onDuplicateFieldsValue + ",";
+            }
+        }
+
+        var query = "INSERT INTO " + table + " " + fieldValue + " VALUES " + valuesString + " ON DUPLICATE KEY UPDATE " + onDuplicateFieldsValue;
+
+        console.debug(query);
+
+        mysqlPool.query(query, function (err, result) {
+            return treatDeadLock(err, deadCb, function () {
+                if (err) {
+                    return cb(err);
+                }
+
+                return cb(null, result.changedRows);
+            });
+        });
+    });
+};
+
 /**
  * Transaction that tries to update table, and if fails try to insert values into table
  *
