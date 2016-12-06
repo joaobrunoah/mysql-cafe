@@ -391,18 +391,29 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
             return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
         }
 
-        var valuesString = "";
+        var arrayCounter = 0;
+        var valuesArray = [];
 
-        for(var i = 0; i < values.length; i++) {
-            var actualValue = "(";
+        valuesArray[arrayCounter] = "";
+
+        for (var i = 0; i < values.length; i++) {
+
+            var rowToInsert = "(";
             for (var j = 0; j < fields.length; j++) {
-                actualValue = actualValue + (values[i][fields[j]] ? "'" + values[i][fields[j]] + "'" : 'null');
+                rowToInsert = rowToInsert + (values[i][fields[j]] ? "'" + values[i][fields[j]] + "'" : 'null');
                 if(fields.length - j > 1) {
-                    actualValue = actualValue + ",";
+                    rowToInsert = rowToInsert + ",";
                 }
             }
-            actualValue = actualValue + ")";
-            valuesString = valuesString + (valuesString == "" ? "" : ",") + actualValue;
+            rowToInsert = rowToInsert + ")";
+
+            valuesArray[arrayCounter] = valuesArray[arrayCounter] + (valuesArray[arrayCounter] == "" ? "" : ",") + rowToInsert;
+
+            if (i != 0 && i % 1000 == 0) {
+                valuesArray.push(valuesArray[arrayCounter]);
+                arrayCounter++;
+                valuesArray[arrayCounter] = "";
+            }
         }
 
         var fieldValue = "(";
@@ -422,19 +433,39 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
             }
         }
 
-        var query = "INSERT INTO " + table + " " + fieldValue + " VALUES " + valuesString + " ON DUPLICATE KEY UPDATE " + onDuplicateFieldsValue;
+        var counter = 0;
 
-        console.debug(query);
+        function insertUpdate(cont) {
 
-        mysqlPool.query(query, function (err, result) {
-            return treatDeadLock(err, deadCb, function () {
-                if (err) {
-                    return cb(err);
-                }
+            if (semaphores[table] == undefined) {
+                semaphores[table] = require('semaphore')(1);
+            }
 
-                return cb(null, result.changedRows);
+            semaphores[table].take(function () {
+                var query = "INSERT INTO " + table + " " + fieldValue + " VALUES " + valuesArray[cont] + " ON DUPLICATE KEY UPDATE " + onDuplicateFieldsValue;
+                console.debug(query);
+                mysqlPool.query(query, function (err, result) {
+                    semaphores[table].leave();
+                    return treatDeadLock(err, deadCb, function () {
+                        counter++;
+
+                        if (err) {
+                            console.error(err);
+                        }
+
+                        if(counter >= arrayCounter) {
+                            return cb(null);
+                        }
+                    });
+                });
             });
-        });
+        }
+
+        arrayCounter++;
+
+        for (var i = 0; i < arrayCounter; i++) {
+            insertUpdate(i);
+        }
     });
 };
 
