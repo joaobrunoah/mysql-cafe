@@ -400,7 +400,7 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
 
             var rowToInsert = "(";
             for (var j = 0; j < fields.length; j++) {
-                rowToInsert = rowToInsert + (values[i][fields[j]] ? "'" + values[i][fields[j]] + "'" : 'null');
+                rowToInsert = rowToInsert + (values[i][fields[j]] ? "'" + mysqlUtils.escapeString(values[i][fields[j]]) + "'" : 'null');
                 if(fields.length - j > 1) {
                     rowToInsert = rowToInsert + ",";
                 }
