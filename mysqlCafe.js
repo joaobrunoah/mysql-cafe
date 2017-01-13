@@ -22,6 +22,7 @@ var MysqlQueries = require("./mysql/mysql-queries");
 var MysqlUtils = require("./mysql/mysql-utils");
 
 // Functions
+var MysqlGreaterThan = require('./mysql/mysql-greater-than');
 var MysqlInArray = require("./mysql/mysql-inArray");
 var MysqlNotInArray = require("./mysql/mysql-notInArray");
 var MysqlInterval = require("./mysql/mysql-interval");
@@ -36,6 +37,7 @@ MysqlCafe.addCredentials = function(poolName, credentials) {
 MysqlCafe.query = MysqlQueries;
 
 MysqlCafe.functions = {
+    greaterThan: MysqlGreaterThan,
     inArray: MysqlInArray,
     notInArray: MysqlNotInArray,
     interval: MysqlInterval,
