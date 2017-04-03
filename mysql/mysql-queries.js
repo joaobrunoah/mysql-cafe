@@ -371,10 +371,10 @@ MysqlQueries.update_query = function (set, where, table, poolName, cb) {
     });
 };
 
-MysqlQueries.insert_duplicate_query = function (fields, primary, values, onDuplicateFields, table, poolName, cb) {
+MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateFields, table, poolName, cb) {
 
     function deadCb() {
-        return MysqlQueries.insert_duplicate_query(fields, primary, values, onDuplicateFields, table, poolName, cb);
+        return MysqlQueries.insert_duplicate_query(fields, values, onDuplicateFields, table, poolName, cb);
     }
 
     if (!poolName || poolName == "") {
@@ -384,23 +384,6 @@ MysqlQueries.insert_duplicate_query = function (fields, primary, values, onDupli
     } else if(!(values instanceof Array)) {
         return cb("values is not an array!")
     }
-
-    function orderArrayNullLast (parameter) {
-
-        return function(a,b){
-
-            if(a[parameter] === null){
-                return 1;
-            }
-            else if(b[parameter] === null){
-                return -1;
-            }
-
-            return (a[parameter] - b[parameter]);
-        };
-    }
-
-    values = values.sort(orderArrayNullLast(primary));
 
     selectDB(poolName, function(err, mysqlPool) {
 
