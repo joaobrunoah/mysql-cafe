@@ -680,12 +680,19 @@ function insertMultiple(query_type, table, values, columns, mysqlPool, max_attem
 }
 
 function treatDeadLock(err, deadCb, cb) {
+
     if(err && err.code === "ER_LOCK_DEADLOCK") {
-        setTimeout(deadCb,500);
-        return;
-    } else {
-        return cb();
+        console.debug('DEADLOCK!');
     }
+
+    return cb();
+
+    // if(err && err.code === "ER_LOCK_DEADLOCK") {
+    //     setTimeout(deadCb,500);
+    //     return;
+    // } else {
+    //     return cb();
+    // }
 }
 
 module.exports = MysqlQueries;
