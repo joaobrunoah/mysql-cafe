@@ -23,6 +23,7 @@ var MysqlUtils = require("./mysql/mysql-utils");
 
 // Functions
 var MysqlGreaterThan = require('./mysql/mysql-greater-than');
+var MysqlLowerThan = require('./mysql/mysql-lower-than');
 var MysqlInArray = require("./mysql/mysql-inArray");
 var MysqlNotInArray = require("./mysql/mysql-notInArray");
 var MysqlInterval = require("./mysql/mysql-interval");
@@ -38,6 +39,7 @@ MysqlCafe.query = MysqlQueries;
 
 MysqlCafe.functions = {
     greaterThan: MysqlGreaterThan,
+    lowerThan: MysqlLowerThan,
     inArray: MysqlInArray,
     notInArray: MysqlNotInArray,
     interval: MysqlInterval,
