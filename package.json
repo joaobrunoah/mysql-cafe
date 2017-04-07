@@ -2,7 +2,7 @@
   "author": "João Bruno Abou Hatem de Liz <joaobrunoah@gmail.com>",
   "name": "mysql-cafe",
   "description": "A framework to use Mysql with Node.js. [UNDER DEVELOPMENT, USE AT YOUR OWN RISK]",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "repository": "https://github.com/joaobrunoah/mysql-cafe",
   "main": "mysqlCafe.js",
   "dependencies": {

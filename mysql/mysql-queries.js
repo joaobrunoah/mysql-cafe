@@ -83,6 +83,32 @@ MysqlQueries.select_query = function (what, where, join, options, table, poolNam
 
 };
 
+MysqlQueries.select_raw_query = function (query, poolName, cb) {
+    if (!poolName || poolName == "") {
+        return cb("PoolName must be specified.");
+    }
+
+    if(!query) {
+        return cb("Query Not Defined");
+    }
+
+    selectDB(poolName, function(err, mysqlPool) {
+        if (err || mysqlPool == undefined) {
+            return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
+        }
+
+        console.debug(query);
+
+        mysqlPool.query(query, function (err, results) {
+            if (err) {
+                return cb(err);
+            }
+
+            return cb(null, results);
+        });
+    })
+};
+
 MysqlQueries.select_object_query = function (select_object, poolName, cb) {
 
     function deadCb() {
