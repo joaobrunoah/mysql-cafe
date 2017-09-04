@@ -7,7 +7,7 @@ function MysqlLowerThan(param){
 }
 
 MysqlLowerThan.prototype.mountWhere = function(variable){
-    return variable + " < '" + this.param + "'";
+    return variable + " < " + this.param;
 };
 
 module.exports = MysqlLowerThan;

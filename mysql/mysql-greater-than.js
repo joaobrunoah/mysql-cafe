@@ -8,7 +8,7 @@ function MysqlGreaterThan(param){
 
 MysqlGreaterThan.prototype.mountWhere = function(variable){
     var mysqlUtils = require('./mysql-utils');
-    return variable + " > '" + this.param + "'";
+    return variable + " > " + this.param;
 };
 
 module.exports = MysqlGreaterThan;
