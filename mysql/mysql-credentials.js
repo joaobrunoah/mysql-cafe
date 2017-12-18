@@ -11,6 +11,9 @@ Credentials.addCredential = function(poolName, credentials) {
 
     var new_credentials = {};
 
+    if (credentials.socketPath) {
+        new_credentials.socketPath = credentials.socketPath;
+    }
     new_credentials.host = credentials.host;
     new_credentials.port = credentials.port ? credentials.port : '3306';
     new_credentials.user = credentials.user ? credentials.user : 'admin';
