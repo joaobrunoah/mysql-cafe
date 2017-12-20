@@ -399,10 +399,6 @@ MysqlQueries.update_query = function (set, where, table, poolName, cb) {
 
 MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateFields, table, poolName, cb) {
 
-    function deadCb() {
-        return MysqlQueries.insert_duplicate_query(fields, values, onDuplicateFields, table, poolName, cb);
-    }
-
     if (!poolName || poolName == "") {
         return cb("PoolName must be specified.");
     } else if (!table || table == "") {
@@ -474,7 +470,7 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
         function insertUpdate(cont) {
 
             if (semaphores[table] == undefined) {
-                semaphores[table] = require('semaphore')(1);
+                semaphores[table] = require('semaphore')(10);
             }
 
             semaphores[table].take(function () {
@@ -482,6 +478,9 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
                 console.debug(query);
                 mysqlPool.query(query, function (err, result) {
                     semaphores[table].leave();
+                    var deadCbParams = {
+                        cont: cont
+                    };
                     return treatDeadLock(err, deadCb, function () {
                         counter++;
 
@@ -492,9 +491,18 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
                         if(counter >= arrayCounter) {
                             return cb(null);
                         }
-                    });
+                    }, deadCbParams);
                 });
             });
+        }
+
+        function deadCb(deadCbParams) {
+
+            if(deadCbParams.cont !== null) {
+                return insertUpdate(deadCbParams.cont);
+            }
+
+            return MysqlQueries.insert_duplicate_query(fields, values, onDuplicateFields, table, poolName, cb);
         }
 
         arrayCounter++;
@@ -715,9 +723,9 @@ function insertMultiple(query_type, table, values, columns, mysqlPool, max_attem
     });
 }
 
-function treatDeadLock(err, deadCb, cb) {
-    if(err && err.code === "ER_LOCK_DEADLOCK") {
-        return deadCb();
+function treatDeadLock(err, deadCb, cb, deadCbParams) {
+    if(err && (err.code === "ER_LOCK_DEADLOCK" || err.code === "EREQUEST")) {
+        return deadCb(deadCbParams);
     } else {
         return cb();
     }
