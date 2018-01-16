@@ -68,7 +68,7 @@ MysqlQueries.select_query = function (what, where, join, options, table, poolNam
         var query = "SELECT " + distinctString + whatString + " FROM " + table + joinString +
             (whereString != "" ? " WHERE " + whereString : "") + " " + optionsString;
 
-        console.debug(query);
+        // console.debug(query);
         
         mysqlPool.query(query, function (err, results) {
             return treatDeadLock(err, deadCb, function() {
@@ -97,7 +97,7 @@ MysqlQueries.select_raw_query = function (query, poolName, cb) {
             return cb("Pool Name " + poolName + " does not exist. Please specify a new poolName through function \"AddCredential\"");
         }
 
-        console.debug(query);
+        // console.debug(query);
 
         mysqlPool.query(query, function (err, results) {
             if (err) {
@@ -132,7 +132,7 @@ MysqlQueries.select_object_query = function (select_object, poolName, cb) {
         // Builds the Query String
         var query = mysqlUtils.buildSelectString(select_object);
 
-        console.debug(query);
+        // console.debug(query);
 
         mysqlPool.query(query, function (err, results) {
             return treatDeadLock(err, deadCb, function () {
@@ -223,7 +223,7 @@ MysqlQueries.insert_query = function (object, table, poolName, cb) {
             var inserts = [columns];
             query = mysql.format(query, inserts);
 
-            console.debug(query);
+            // console.debug(query);
 
             mysqlPool.query(query, function (err, result) {
                 return treatDeadLock(err, deadCb, function () {
@@ -383,7 +383,7 @@ MysqlQueries.update_query = function (set, where, table, poolName, cb) {
         var whereString = mysqlUtils.buildWhereString(where);
 
         var query = "UPDATE " + table + " SET " + setString + " WHERE " + whereString;
-        console.debug(query);
+        // console.debug(query);
 
         mysqlPool.query(query, function (err, result) {
             return treatDeadLock(err, deadCb, function () {
@@ -470,12 +470,12 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
         function insertUpdate(cont) {
 
             if (semaphores[table] == undefined) {
-                semaphores[table] = require('semaphore')(10);
+                semaphores[table] = require('semaphore')(1);
             }
 
             semaphores[table].take(function () {
                 var query = "INSERT INTO " + table + " " + fieldValue + " VALUES " + valuesArray[cont] + " ON DUPLICATE KEY UPDATE " + onDuplicateFieldsValue;
-                console.debug(query);
+                // console.debug(query);
                 mysqlPool.query(query, function (err, result) {
                     semaphores[table].leave();
                     var deadCbParams = {
@@ -564,7 +564,7 @@ MysqlQueries.update_insert_query = function (set, where, table, poolName, cb) {
                 }
 
                 query = "UPDATE " + table + " SET " + setString + " WHERE " + whereString + "; ";
-                console.debug(query);
+                // console.debug(query);
 
                 connection.query(query, function (err, result1) {
                     if (err) {
@@ -598,7 +598,7 @@ MysqlQueries.update_insert_query = function (set, where, table, poolName, cb) {
 
                     query = mysql.format(query, inserts);
 
-                    console.debug(query);
+                    // console.debug(query);
 
                     connection.query(query, function (err, result2) {
                         if (err) {
@@ -658,14 +658,14 @@ MysqlQueries.delete_query = function (where, table, poolName, cb) {
         var whereString = mysqlUtils.buildWhereString(where);
 
         var query = "DELETE FROM " + table + " WHERE " + whereString;
-        console.debug(query);
+        // console.debug(query);
 
         mysqlPool.query(query, function (err, result) {
             return treatDeadLock(err, deadCb, function () {
                 if (err) {
                     return cb(err);
                 }
-                console.debug(result.affectedRows + ' elements deleted from ' + table);
+                // console.debug(result.affectedRows + ' elements deleted from ' + table);
                 return cb(null, result.affectedRows);
             });
         })
@@ -706,7 +706,7 @@ function insertMultiple(query_type, table, values, columns, mysqlPool, max_attem
         var query = queryStruct + values;
         query = mysql.format(query, inserts);
 
-        console.debug(query);
+        // console.debug(query);
 
         mysqlPool.query(query, function (err, result) {
             semaphores[table].leave();
