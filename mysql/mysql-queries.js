@@ -423,7 +423,7 @@ MysqlQueries.insert_duplicate_query = function (fields, values, onDuplicateField
             var rowToInsert = "(";
             for (var j = 0; j < fields.length; j++) {
 
-                if(values[i][fields[j]]) {
+                if(values[i][fields[j]] || values[i][fields[j]] === 0) {
                     if(values[i][fields[j]].isSelect) {
                         rowToInsert = rowToInsert + values[i][fields[j]].query;
                     } else {
