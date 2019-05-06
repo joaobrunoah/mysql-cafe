@@ -2,6 +2,40 @@
  * Created by joao.liz on 24/08/2016.
  */
 
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
 var Credentials = function() {
 };
 
@@ -9,18 +43,8 @@ Credentials.savedCredentials = {};
 
 Credentials.addCredential = function(poolName, credentials) {
 
-    var new_credentials = {};
-
-    if (credentials.socketPath) {
-        new_credentials.socketPath = credentials.socketPath;
-    }
-    new_credentials.host = credentials.host;
-    new_credentials.port = credentials.port ? credentials.port : '3306';
-    new_credentials.user = credentials.user ? credentials.user : 'admin';
-    new_credentials.password = credentials.password ? credentials.password : '';
-    new_credentials.database = credentials.database ? credentials.database : 'default';
+    var new_credentials = clone(credentials);
     new_credentials.connectionLimit = credentials.connectionLimit ? credentials.connectionLimit : 10;
-
     Credentials.savedCredentials[poolName] = new_credentials;
 
 };
